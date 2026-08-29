@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { Button, Card, CardHeader, CardTitle, CardContent, Badge, Tabs, TabsList, TabsTrigger, TabsContent, ColorPicker, Select } from '../../components/ui'
 import { designTokens, stylePresets } from '../../lib/design-tokens'
+import { staggerContainer, staggerItem, springGentle } from '../../lib/motion'
 import { Check, Copy, Download, Palette, Type, Box, Layers } from 'lucide-react'
 
 const FONT_SIZES = [
@@ -76,14 +78,21 @@ export default function DesignSystem() {
                   <div className="mt-6">
                     <p className="text-caption font-semibold text-neutral-400 uppercase tracking-wider mb-3">Primary Palette</p>
                     <div className="flex gap-1.5">
-                      {Object.entries(designTokens.colors.primary).map(([key, value]) => (
-                        <div key={key} className="flex-1 text-center">
+                      {Object.entries(designTokens.colors.primary).map(([key, value], i) => (
+                        <motion.div
+                          key={key}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: i * 0.03 }}
+                          whileHover={{ scale: 1.08, y: -2 }}
+                          className="flex-1 text-center"
+                        >
                           <div
                             className="h-10 rounded-lg mb-1 border border-neutral-700/30"
                             style={{ background: value }}
                           />
                           <span className="text-micro text-neutral-500">{key}</span>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
                   </div>
@@ -91,14 +100,21 @@ export default function DesignSystem() {
                   <div>
                     <p className="text-caption font-semibold text-neutral-400 uppercase tracking-wider mb-3">Secondary Palette</p>
                     <div className="flex gap-1.5">
-                      {Object.entries(designTokens.colors.secondary).map(([key, value]) => (
-                        <div key={key} className="flex-1 text-center">
+                      {Object.entries(designTokens.colors.secondary).map(([key, value], i) => (
+                        <motion.div
+                          key={key}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: i * 0.03 }}
+                          whileHover={{ scale: 1.08, y: -2 }}
+                          className="flex-1 text-center"
+                        >
                           <div
                             className="h-10 rounded-lg mb-1 border border-neutral-700/30"
                             style={{ background: value }}
                           />
                           <span className="text-micro text-neutral-500">{key}</span>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
                   </div>
@@ -113,14 +129,21 @@ export default function DesignSystem() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex gap-1">
-                    {Object.entries(designTokens.colors.neutral).map(([key, value]) => (
-                      <div key={key} className="flex-1 text-center">
+                    {Object.entries(designTokens.colors.neutral).map(([key, value], i) => (
+                      <motion.div
+                        key={key}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.02 }}
+                        whileHover={{ scale: 1.1 }}
+                        className="flex-1 text-center"
+                      >
                         <div
                           className="h-12 rounded-lg mb-1 border border-neutral-700/30"
                           style={{ background: value }}
                         />
                         <span className="text-micro text-neutral-500">{key}</span>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </CardContent>
@@ -160,7 +183,14 @@ export default function DesignSystem() {
                       { bg: '#020617', fg: '#94a3b8', ratio: '7.2:1', label: 'Neutral 400 on Neutral 950' },
                       { bg: '#6366f1', fg: '#ffffff', ratio: '4.6:1', label: 'White on Primary 500' },
                     ].map((combo, i) => (
-                      <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-neutral-800/30">
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: -12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 + i * 0.08 }}
+                        whileHover={{ x: 4, backgroundColor: 'rgba(30, 41, 59, 0.3)' }}
+                        className="flex items-center gap-3 p-2 rounded-lg bg-neutral-800/30 transition-colors"
+                      >
                         <div className="flex gap-1">
                           <div className="w-10 h-6 rounded" style={{ background: combo.bg }} />
                           <div className="w-10 h-6 rounded flex items-center justify-center text-micro font-bold" style={{ background: combo.bg, color: combo.fg }}>Aa</div>
@@ -171,7 +201,7 @@ export default function DesignSystem() {
                         <Badge variant={parseFloat(combo.ratio) >= 4.5 ? 'success' : 'danger'} size="sm">
                           {combo.ratio}
                         </Badge>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </CardContent>
@@ -189,14 +219,20 @@ export default function DesignSystem() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {FONT_SIZES.map((size) => (
-                    <div key={size.label} className="flex items-center gap-4 py-2 border-b border-neutral-800/30 last:border-0">
+                  {FONT_SIZES.map((size, i) => (
+                    <motion.div
+                      key={size.label}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.04 }}
+                      className="flex items-center gap-4 py-2 border-b border-neutral-800/30 last:border-0"
+                    >
                       <span className="text-caption text-neutral-500 w-20 shrink-0">{size.label}</span>
                       <span className="text-neutral-700 w-16 shrink-0 font-mono text-caption">{size.value}</span>
                       <span className="text-neutral-200 truncate" style={{ fontSize: size.value }}>
                         The quick brown fox
                       </span>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </CardContent>
@@ -262,15 +298,21 @@ export default function DesignSystem() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {SPACING_SCALE.map((s) => (
-                    <div key={s} className="flex items-center gap-3">
+                  {SPACING_SCALE.map((s, i) => (
+                    <motion.div
+                      key={s}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.03 }}
+                      className="flex items-center gap-3"
+                    >
                       <span className="text-caption text-neutral-500 w-8 font-mono">{s}</span>
                       <span className="text-caption text-neutral-400 w-12 font-mono">{s * 4}px</span>
                       <div
                         className="h-4 rounded bg-primary-500/30 border border-primary-500/20"
                         style={{ width: `${Math.min(s * 16, 400)}px` }}
                       />
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </CardContent>
@@ -282,15 +324,22 @@ export default function DesignSystem() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-3 gap-4">
-                  {Object.entries(designTokens.borderRadius).map(([name, value]) => (
-                    <div key={name} className="text-center">
+                  {Object.entries(designTokens.borderRadius).map(([name, value], i) => (
+                    <motion.div
+                      key={name}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: i * 0.04 }}
+                      whileHover={{ scale: 1.08, y: -2 }}
+                      className="text-center"
+                    >
                       <div
                         className="w-16 h-16 mx-auto mb-2 bg-primary-500/20 border border-primary-500/30"
                         style={{ borderRadius: value }}
                       />
                       <p className="text-caption font-medium text-neutral-300">{name}</p>
                       <p className="text-micro text-neutral-500">{value}</p>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </CardContent>
@@ -301,14 +350,19 @@ export default function DesignSystem() {
         {/* Presets Tab */}
         <TabsContent value="presets">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {Object.entries(stylePresets).map(([key, preset]) => (
-              <Card
+            {Object.entries(stylePresets).map(([key, preset], i) => (
+              <motion.div
                 key={key}
-                hover
-                glow={activePreset === key}
-                className={`cursor-pointer ${activePreset === key ? 'border-primary-500/50' : ''}`}
-                onClick={() => setActivePreset(key)}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.04 }}
               >
+                <Card
+                  hover
+                  glow={activePreset === key}
+                  className={`cursor-pointer ${activePreset === key ? 'border-primary-500/50' : ''}`}
+                  onClick={() => setActivePreset(key)}
+                >
                 <div className="flex items-start justify-between mb-3">
                   <Badge variant={activePreset === key ? 'primary' : 'default'} size="sm">
                     {preset.name}
@@ -329,6 +383,7 @@ export default function DesignSystem() {
                   <span className="text-micro text-neutral-500">Radius: {preset.tokens.borderRadius}</span>
                 </div>
               </Card>
+              </motion.div>
             ))}
           </div>
         </TabsContent>

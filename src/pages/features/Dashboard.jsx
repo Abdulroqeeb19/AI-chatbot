@@ -1,4 +1,6 @@
+import { motion } from 'framer-motion'
 import { Card, CardHeader, CardTitle, CardContent, Badge, ScoreRing, ProgressBar } from '../../components/ui'
+import { staggerContainer, staggerItem } from '../../lib/motion'
 import { TrendingUp, MessageSquare, Users, Zap, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 
 const STATS = [
@@ -27,146 +29,162 @@ const TOP_PAGES = [
 
 export default function Dashboard() {
   return (
-    <div className="space-y-6 animate-fade-in">
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={staggerContainer}
+      className="space-y-6"
+    >
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {STATS.map((stat) => {
+        {STATS.map((stat, i) => {
           const Icon = stat.icon
           return (
-            <Card key={stat.label} hover glow>
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-caption text-neutral-500 font-medium">{stat.label}</p>
-                  <p className="text-h3 font-bold text-neutral-100 mt-1">{stat.value}</p>
+            <motion.div key={stat.label} variants={staggerItem}>
+              <Card hover glow>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-caption text-neutral-500 font-medium">{stat.label}</p>
+                    <p className="text-h3 font-bold text-neutral-100 mt-1">{stat.value}</p>
+                  </div>
+                  <motion.div
+                    whileHover={{ rotate: 10, scale: 1.1 }}
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                      stat.color === 'primary' ? 'bg-primary-500/10' :
+                      stat.color === 'success' ? 'bg-success-500/10' :
+                      stat.color === 'secondary' ? 'bg-secondary-500/10' :
+                      'bg-warning-500/10'
+                    }`}
+                  >
+                    <Icon className={`w-5 h-5 ${
+                      stat.color === 'primary' ? 'text-primary-400' :
+                      stat.color === 'success' ? 'text-success-500' :
+                      stat.color === 'secondary' ? 'text-secondary-400' :
+                      'text-warning-500'
+                    }`} />
+                  </motion.div>
                 </div>
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                  stat.color === 'primary' ? 'bg-primary-500/10' :
-                  stat.color === 'success' ? 'bg-success-500/10' :
-                  stat.color === 'secondary' ? 'bg-secondary-500/10' :
-                  'bg-warning-500/10'
-                }`}>
-                  <Icon className={`w-5 h-5 ${
-                    stat.color === 'primary' ? 'text-primary-400' :
-                    stat.color === 'success' ? 'text-success-500' :
-                    stat.color === 'secondary' ? 'text-secondary-400' :
-                    'text-warning-500'
-                  }`} />
+                <div className="flex items-center gap-1.5 mt-3">
+                  {stat.up ? (
+                    <ArrowUpRight className="w-3.5 h-3.5 text-success-500" />
+                  ) : (
+                    <ArrowDownRight className="w-3.5 h-3.5 text-critical-500" />
+                  )}
+                  <span className={`text-caption font-semibold ${stat.up ? 'text-success-500' : 'text-critical-500'}`}>
+                    {stat.change}
+                  </span>
+                  <span className="text-caption text-neutral-500">vs last month</span>
                 </div>
-              </div>
-              <div className="flex items-center gap-1.5 mt-3">
-                {stat.up ? (
-                  <ArrowUpRight className="w-3.5 h-3.5 text-success-500" />
-                ) : (
-                  <ArrowDownRight className="w-3.5 h-3.5 text-critical-500" />
-                )}
-                <span className={`text-caption font-semibold ${stat.up ? 'text-success-500' : 'text-critical-500'}`}>
-                  {stat.change}
-                </span>
-                <span className="text-caption text-neutral-500">vs last month</span>
-              </div>
-            </Card>
+              </Card>
+            </motion.div>
           )
         })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Performance Score */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Performance Score</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-around py-4">
-              <ScoreRing value={92} size={100} strokeWidth={8} color="success" label="Overall" />
-              <div className="space-y-4">
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-caption text-neutral-400">Speed</span>
-                    <span className="text-caption font-semibold text-success-500">95</span>
-                  </div>
-                  <ProgressBar value={95} color="success" />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-caption text-neutral-400">SEO</span>
-                    <span className="text-caption font-semibold text-primary-400">88</span>
-                  </div>
-                  <ProgressBar value={88} color="primary" />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-caption text-neutral-400">Accessibility</span>
-                    <span className="text-caption font-semibold text-secondary-400">91</span>
-                  </div>
-                  <ProgressBar value={91} color="primary" />
+        <motion.div variants={staggerItem}>
+          <Card>
+            <CardHeader>
+              <CardTitle>Performance Score</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-around py-4">
+                <ScoreRing value={92} size={100} strokeWidth={8} color="success" label="Overall" />
+                <div className="space-y-4">
+                  <ProgressBar value={95} color="success" label="Speed" showValue />
+                  <ProgressBar value={88} color="primary" label="SEO" showValue />
+                  <ProgressBar value={91} color="primary" label="Accessibility" showValue />
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Recent Activity */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {RECENT_ACTIVITY.map((activity, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-neutral-800/20 border border-neutral-800/30 hover:border-neutral-700/50 transition-colors">
-                  <div className={`w-2 h-2 rounded-full shrink-0 ${
-                    activity.badge === 'primary' ? 'bg-primary-400' :
-                    activity.badge === 'success' ? 'bg-success-500' :
-                    activity.badge === 'secondary' ? 'bg-secondary-400' :
-                    'bg-neutral-400'
-                  }`} />
-                  <p className="text-body-sm text-neutral-300 flex-1">{activity.message}</p>
-                  <span className="text-caption text-neutral-500 shrink-0">{activity.time}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <motion.div variants={staggerItem} className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {RECENT_ACTIVITY.map((activity, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + i * 0.06 }}
+                    whileHover={{ x: 4, borderColor: 'rgba(51, 65, 85, 0.5)' }}
+                    className="flex items-center gap-3 p-3 rounded-lg bg-neutral-800/20 border border-neutral-800/30 transition-colors"
+                  >
+                    <motion.div
+                      animate={{ scale: [1, 1.3, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                      className={`w-2 h-2 rounded-full shrink-0 ${
+                        activity.badge === 'primary' ? 'bg-primary-400' :
+                        activity.badge === 'success' ? 'bg-success-500' :
+                        activity.badge === 'secondary' ? 'bg-secondary-400' :
+                        'bg-neutral-400'
+                      }`}
+                    />
+                    <p className="text-body-sm text-neutral-300 flex-1">{activity.message}</p>
+                    <span className="text-caption text-neutral-500 shrink-0">{activity.time}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
 
       {/* Top Performing Pages */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Top Performing Pages</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-neutral-800/50">
-                  <th className="text-left py-3 px-4 text-caption font-semibold text-neutral-400 uppercase tracking-wider">Page</th>
-                  <th className="text-right py-3 px-4 text-caption font-semibold text-neutral-400 uppercase tracking-wider">Conversations</th>
-                  <th className="text-right py-3 px-4 text-caption font-semibold text-neutral-400 uppercase tracking-wider">Conversion</th>
-                  <th className="text-right py-3 px-4 text-caption font-semibold text-neutral-400 uppercase tracking-wider">Trend</th>
-                </tr>
-              </thead>
-              <tbody>
-                {TOP_PAGES.map((page, i) => (
-                  <tr key={i} className="border-b border-neutral-800/30 hover:bg-neutral-800/20 transition-colors">
-                    <td className="py-3 px-4">
-                      <span className="text-body-sm font-mono text-primary-400">{page.name}</span>
-                    </td>
-                    <td className="py-3 px-4 text-right text-body-sm text-neutral-200">{page.conversations.toLocaleString()}</td>
-                    <td className="py-3 px-4 text-right">
-                      <Badge variant={parseFloat(page.conversion) > 10 ? 'success' : 'default'} size="sm">
-                        {page.conversion}
-                      </Badge>
-                    </td>
-                    <td className="py-3 px-4 text-right">
-                      <ArrowUpRight className="inline w-4 h-4 text-success-500" />
-                    </td>
+      <motion.div variants={staggerItem}>
+        <Card>
+          <CardHeader>
+            <CardTitle>Top Performing Pages</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-neutral-800/50">
+                    <th className="text-left py-3 px-4 text-caption font-semibold text-neutral-400 uppercase tracking-wider">Page</th>
+                    <th className="text-right py-3 px-4 text-caption font-semibold text-neutral-400 uppercase tracking-wider">Conversations</th>
+                    <th className="text-right py-3 px-4 text-caption font-semibold text-neutral-400 uppercase tracking-wider">Conversion</th>
+                    <th className="text-right py-3 px-4 text-caption font-semibold text-neutral-400 uppercase tracking-wider">Trend</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+                </thead>
+                <tbody>
+                  {TOP_PAGES.map((page, i) => (
+                    <motion.tr
+                      key={i}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 + i * 0.05 }}
+                      whileHover={{ backgroundColor: 'rgba(30, 41, 59, 0.2)' }}
+                      className="border-b border-neutral-800/30 transition-colors"
+                    >
+                      <td className="py-3 px-4">
+                        <span className="text-body-sm font-mono text-primary-400">{page.name}</span>
+                      </td>
+                      <td className="py-3 px-4 text-right text-body-sm text-neutral-200">{page.conversations.toLocaleString()}</td>
+                      <td className="py-3 px-4 text-right">
+                        <Badge variant={parseFloat(page.conversion) > 10 ? 'success' : 'default'} size="sm">
+                          {page.conversion}
+                        </Badge>
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <ArrowUpRight className="inline w-4 h-4 text-success-500" />
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </motion.div>
   )
 }

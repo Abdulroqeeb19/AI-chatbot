@@ -1,4 +1,5 @@
 import * as SwitchPrimitive from '@radix-ui/react-switch'
+import { motion } from 'framer-motion'
 import { cn } from '../../lib/cn'
 
 export default function Switch({ label, description, className, ...props }) {
@@ -21,13 +22,13 @@ export default function Switch({ label, description, className, ...props }) {
         )}
         {...props}
       >
-        <SwitchPrimitive.Thumb
-          className={cn(
-            'pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg',
-            'transition-transform duration-200',
-            'data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0'
-          )}
-        />
+        <SwitchPrimitive.Thumb asChild>
+          <motion.span
+            className="pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg"
+            layout
+            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+          />
+        </SwitchPrimitive.Thumb>
       </SwitchPrimitive.Root>
     </div>
   )

@@ -1,4 +1,6 @@
+import { motion } from 'framer-motion'
 import { cn } from '../../lib/cn'
+import { scaleIn } from '../../lib/motion'
 
 const variants = {
   default: 'bg-neutral-800/50 text-neutral-300 border-neutral-700/50',
@@ -24,7 +26,10 @@ export default function Badge({
   ...props
 }) {
   return (
-    <span
+    <motion.span
+      initial="hidden"
+      animate="visible"
+      variants={scaleIn}
       className={cn(
         'inline-flex items-center gap-1.5 font-semibold rounded-full border',
         variants[variant],
@@ -34,17 +39,21 @@ export default function Badge({
       {...props}
     >
       {dot && (
-        <span className={cn(
-          'w-1.5 h-1.5 rounded-full',
-          variant === 'success' && 'bg-success-500',
-          variant === 'warning' && 'bg-warning-500',
-          variant === 'danger' && 'bg-critical-500',
-          variant === 'primary' && 'bg-primary-400',
-          variant === 'secondary' && 'bg-secondary-400',
-          variant === 'default' && 'bg-neutral-400',
-        )} />
+        <motion.span
+          className={cn(
+            'w-1.5 h-1.5 rounded-full',
+            variant === 'success' && 'bg-success-500',
+            variant === 'warning' && 'bg-warning-500',
+            variant === 'danger' && 'bg-critical-500',
+            variant === 'primary' && 'bg-primary-400',
+            variant === 'secondary' && 'bg-secondary-400',
+            variant === 'default' && 'bg-neutral-400',
+          )}
+          animate={{ scale: [1, 1.3, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        />
       )}
       {children}
-    </span>
+    </motion.span>
   )
 }

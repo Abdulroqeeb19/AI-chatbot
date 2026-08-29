@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react'
+import { motion } from 'framer-motion'
 import { Card, CardHeader, CardTitle, Button, Badge, Modal } from '../../components/ui'
+import { staggerContainer, staggerItem, springGentle } from '../../lib/motion'
 import { Plus, Play, Pause, Trash2, Settings, ChevronRight, Zap, Database, Globe, Mail, MessageSquare, Clock, GitBranch } from 'lucide-react'
 
 const NODE_TYPES = [
@@ -57,8 +59,12 @@ export default function Pipeline() {
   const [showNodePalette, setShowNodePalette] = useState(false)
 
   return (
-    <div className="animate-fade-in">
-      <div className="flex gap-6 h-[calc(100vh-8rem)]">
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={staggerContainer}
+      className="flex gap-6 h-[calc(100vh-8rem)]"
+    >
         {/* Pipeline List */}
         <div className="w-72 shrink-0 flex flex-col">
           <div className="flex items-center justify-between mb-4">
@@ -69,16 +75,21 @@ export default function Pipeline() {
           </div>
 
           <div className="space-y-2 flex-1 overflow-y-auto">
-            {PIPELINES.map((pipeline) => (
-              <button
-                key={pipeline.id}
-                onClick={() => setSelectedPipeline(pipeline)}
-                className={`w-full text-left p-3 rounded-xl border transition-all ${
-                  selectedPipeline.id === pipeline.id
-                    ? 'bg-primary-500/10 border-primary-500/30'
-                    : 'bg-neutral-900/50 border-neutral-800/50 hover:border-neutral-700/50'
-                }`}
-              >
+            {PIPELINES.map((pipeline, i) => (
+                <motion.button
+                  key={pipeline.id}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.08 }}
+                  whileHover={{ x: 4, borderColor: 'rgba(99, 102, 241, 0.3)' }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setSelectedPipeline(pipeline)}
+                  className={`w-full text-left p-3 rounded-xl border transition-all ${
+                    selectedPipeline.id === pipeline.id
+                      ? 'bg-primary-500/10 border-primary-500/30'
+                      : 'bg-neutral-900/50 border-neutral-800/50'
+                  }`}
+                >
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-body-sm font-semibold text-neutral-200">{pipeline.name}</span>
                   <Badge
@@ -95,7 +106,7 @@ export default function Pipeline() {
                   <span>{pipeline.runs} runs</span>
                   <span>{pipeline.lastRun}</span>
                 </div>
-              </button>
+                </motion.button>
             ))}
           </div>
         </div>
@@ -157,12 +168,16 @@ export default function Pipeline() {
                 )}
               </svg>
 
-              {MOCK_NODES.map((node) => {
+              {MOCK_NODES.map((node, i) => {
                 const nodeType = NODE_TYPES.find(t => t.type === node.type)
                 const Icon = nodeType?.icon || Zap
                 return (
-                  <div
+                  <motion.div
                     key={node.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.08, type: 'spring', stiffness: 200, damping: 15 }}
+                    whileHover={{ y: -3, boxShadow: '0 0 24px rgba(99,102,241,0.2)' }}
                     className="absolute group cursor-pointer"
                     style={{ left: node.x, top: node.y }}
                   >
@@ -178,17 +193,19 @@ export default function Pipeline() {
                     {/* Connection points */}
                     <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-neutral-700 border-2 border-neutral-900 group-hover:bg-primary-500 transition-colors" />
                     <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-neutral-700 border-2 border-neutral-900 group-hover:bg-primary-500 transition-colors" />
-                  </div>
+                  </motion.div>
                 )
               })}
 
               {/* Add Node Button */}
-              <button
+              <motion.button
+                whileHover={{ scale: 1.08, boxShadow: '0 0 32px rgba(99,102,241,0.35)' }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setShowNodePalette(true)}
-                className="absolute bottom-4 right-4 w-12 h-12 rounded-xl bg-primary-500/20 border border-primary-500/30 flex items-center justify-center text-primary-400 hover:bg-primary-500/30 hover:border-primary-500/50 transition-all shadow-glow"
+                className="absolute bottom-4 right-4 w-12 h-12 rounded-xl bg-primary-500/20 border border-primary-500/30 flex items-center justify-center text-primary-400 shadow-glow"
               >
                 <Plus className="w-5 h-5" />
-              </button>
+              </motion.button>
             </div>
           </Card>
         </div>
@@ -200,12 +217,16 @@ export default function Pipeline() {
               <CardTitle className="text-body-sm">Add Node</CardTitle>
             </CardHeader>
             <div className="space-y-1.5">
-              {NODE_TYPES.map((nodeType) => {
+              {NODE_TYPES.map((nodeType, i) => {
                 const Icon = nodeType.icon
                 return (
-                  <button
+                  <motion.button
                     key={nodeType.type}
-                    className="w-full flex items-center gap-2.5 p-2 rounded-lg text-left hover:bg-neutral-800/50 transition-colors group"
+                    initial={{ opacity: 0, x: 8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.04 }}
+                    whileHover={{ x: 4, backgroundColor: 'rgba(30, 41, 59, 0.5)' }}
+                    className="w-full flex items-center gap-2.5 p-2 rounded-lg text-left transition-colors group"
                   >
                     <div className={`w-7 h-7 rounded-md ${nodeType.color} flex items-center justify-center shrink-0`}>
                       <Icon className="w-3.5 h-3.5 text-white" />
@@ -214,13 +235,12 @@ export default function Pipeline() {
                       <p className="text-caption font-medium text-neutral-300 group-hover:text-neutral-100 transition-colors">{nodeType.label}</p>
                       <p className="text-micro text-neutral-600 truncate">{nodeType.description}</p>
                     </div>
-                  </button>
+                  </motion.button>
                 )
               })}
             </div>
           </Card>
         </div>
-      </div>
-    </div>
+    </motion.div>
   )
 }

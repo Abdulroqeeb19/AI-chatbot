@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { cn } from '../../lib/cn'
 
 const sizes = {
@@ -14,7 +15,9 @@ export default function Avatar({ src, alt, name, size = 'md', className, ...prop
     : '?'
 
   return (
-    <div
+    <motion.div
+      whileHover={{ scale: 1.08 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 15 }}
       className={cn(
         'relative inline-flex items-center justify-center rounded-full overflow-hidden',
         'bg-gradient-to-br from-primary-500 to-secondary-500 font-bold text-white',
@@ -28,6 +31,6 @@ export default function Avatar({ src, alt, name, size = 'md', className, ...prop
       ) : (
         <span>{initials}</span>
       )}
-    </div>
+    </motion.div>
   )
 }

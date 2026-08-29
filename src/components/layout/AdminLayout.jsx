@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Sidebar from './Sidebar'
 import Topbar from './Topbar'
+import { pageTransition } from '../../lib/motion'
 
 const PAGE_META = {
   dashboard: { title: 'Dashboard', subtitle: 'Overview of your workspace' },
@@ -18,10 +20,24 @@ export default function AdminLayout({ activePage, onNavigate, businessName, chil
 
   return (
     <div className="min-h-screen bg-neutral-950">
-      {/* Background gradient orbs */}
+      {/* Background gradient orbs with subtle animation */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary-500/5 blur-[120px]" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-secondary-500/5 blur-[120px]" />
+        <motion.div
+          animate={{
+            x: [0, 20, 0],
+            y: [0, -15, 0],
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary-500/5 blur-[120px]"
+        />
+        <motion.div
+          animate={{
+            x: [0, -20, 0],
+            y: [0, 15, 0],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-secondary-500/5 blur-[120px]"
+        />
       </div>
 
       <Sidebar
@@ -32,7 +48,11 @@ export default function AdminLayout({ activePage, onNavigate, businessName, chil
         onToggleCollapse={() => setCollapsed(!collapsed)}
       />
 
-      <div className={`transition-all duration-300 ${collapsed ? 'ml-[68px]' : 'ml-[260px]'}`}>
+      <motion.div
+        animate={{ marginLeft: collapsed ? 68 : 260 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="relative"
+      >
         <Topbar
           title={meta.title}
           subtitle={meta.subtitle}
@@ -41,9 +61,19 @@ export default function AdminLayout({ activePage, onNavigate, businessName, chil
         />
 
         <main className="p-6">
-          {children}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activePage}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={pageTransition}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </main>
-      </div>
+      </motion.div>
     </div>
   )
 }

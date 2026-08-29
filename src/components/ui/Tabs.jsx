@@ -1,5 +1,7 @@
 import { useState, createContext, useContext } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '../../lib/cn'
+import { fadeUp, tweenFast } from '../../lib/motion'
 
 const TabsContext = createContext()
 
@@ -41,31 +43,44 @@ export function TabsTrigger({ value, className, children, ...props }) {
       role="tab"
       aria-selected={isActive}
       className={cn(
-        'px-4 py-2 text-body-sm font-medium rounded-lg transition-all duration-200',
-        isActive
-          ? 'bg-primary-500/15 text-primary-400 shadow-sm'
-          : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/50',
+        'relative px-4 py-2 text-body-sm font-medium rounded-lg transition-colors duration-200',
+        isActive ? 'text-primary-400' : 'text-neutral-400 hover:text-neutral-200',
         className
       )}
       onClick={() => ctx.setValue(value)}
       {...props}
     >
-      {children}
+      {isActive && (
+        <motion.div
+          layoutId="tab-active-bg"
+          className="absolute inset-0 bg-primary-500/15 rounded-lg shadow-sm"
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        />
+      )}
+      <span className="relative z-10">{children}</span>
     </button>
   )
 }
 
 export function TabsContent({ value, className, children, ...props }) {
   const ctx = useContext(TabsContext)
-  if (ctx.value !== value) return null
 
   return (
-    <div
-      role="tabpanel"
-      className={cn('mt-4 animate-fade-in', className)}
-      {...props}
-    >
-      {children}
-    </div>
+    <AnimatePresence mode="wait">
+      {ctx.value === value && (
+        <motion.div
+          key={value}
+          role="tabpanel"
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={fadeUp}
+          className={cn('mt-4', className)}
+          {...props}
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }

@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { Card, CardHeader, CardTitle, CardContent, Badge, Button, Tabs, TabsList, TabsTrigger, TabsContent, Switch, Input } from '../../components/ui'
 import { PenTool, RefreshCw, Check, AlertCircle, Link, Unlink, Download, Upload, Clock, FileImage } from 'lucide-react'
+import { staggerContainer, staggerItem, springGentle } from '../../lib/motion'
 
 const CONNECTIONS = [
   { id: '1', name: 'ChatBot Pro Design System', file: 'CBP-Design-System.fig', status: 'connected', lastSync: '5 min ago', components: 24 },
@@ -73,51 +75,62 @@ export default function PenToolHub() {
 
         {/* Connections Tab */}
         <TabsContent value="connections">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
             {CONNECTIONS.map((conn) => (
-              <Card key={conn.id} hover glow={conn.status === 'connected'}>
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20 flex items-center justify-center">
-                    <PenTool className="w-6 h-6 text-purple-400" />
+              <motion.div key={conn.id} variants={staggerItem} whileHover={{ y: -4 }}>
+                <Card hover glow={conn.status === 'connected'}>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20 flex items-center justify-center">
+                      <PenTool className="w-6 h-6 text-purple-400" />
+                    </div>
+                    <Badge
+                      variant={conn.status === 'connected' ? 'success' : 'default'}
+                      size="sm"
+                      dot
+                    >
+                      {conn.status}
+                    </Badge>
                   </div>
-                  <Badge
-                    variant={conn.status === 'connected' ? 'success' : 'default'}
-                    size="sm"
-                    dot
-                  >
-                    {conn.status}
-                  </Badge>
-                </div>
 
-                <h4 className="text-body font-semibold text-neutral-200 mb-1">{conn.name}</h4>
-                <p className="text-caption text-neutral-500 mb-3">{conn.file}</p>
+                  <h4 className="text-body font-semibold text-neutral-200 mb-1">{conn.name}</h4>
+                  <p className="text-caption text-neutral-500 mb-3">{conn.file}</p>
 
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-caption text-neutral-400">{conn.components} components</span>
-                  <span className="text-caption text-neutral-500">Synced {conn.lastSync}</span>
-                </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-caption text-neutral-400">{conn.components} components</span>
+                    <span className="text-caption text-neutral-500">Synced {conn.lastSync}</span>
+                  </div>
 
-                <div className="flex gap-2">
-                  <Button variant="secondary" size="sm" className="flex-1">
-                    <RefreshCw className="w-3.5 h-3.5 mr-1" />
-                    Sync
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Unlink className="w-3.5 h-3.5" />
-                  </Button>
-                </div>
-              </Card>
+                  <div className="flex gap-2">
+                    <Button variant="secondary" size="sm" className="flex-1">
+                      <RefreshCw className="w-3.5 h-3.5 mr-1" />
+                      Sync
+                    </Button>
+                    <Button variant="ghost" size="sm">
+                      <Unlink className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
             ))}
 
             {/* Add New Connection Card */}
-            <Card hover className="border-dashed border-neutral-700/50 flex flex-col items-center justify-center py-12 cursor-pointer">
-              <div className="w-12 h-12 rounded-xl bg-neutral-800/50 border border-neutral-700/50 flex items-center justify-center mb-3">
-                <Link className="w-6 h-6 text-neutral-500" />
-              </div>
-              <p className="text-body-sm font-semibold text-neutral-400">Connect New File</p>
-              <p className="text-caption text-neutral-600 mt-1">Link a PenTool file to sync</p>
-            </Card>
-          </div>
+            <motion.div variants={staggerItem}>
+              <motion.div whileHover={{ scale: 1.02, borderColor: 'rgba(99,102,241,0.3)' }}>
+                <Card hover className="border-dashed border-neutral-700/50 flex flex-col items-center justify-center py-12 cursor-pointer">
+                  <div className="w-12 h-12 rounded-xl bg-neutral-800/50 border border-neutral-700/50 flex items-center justify-center mb-3">
+                    <Link className="w-6 h-6 text-neutral-500" />
+                  </div>
+                  <p className="text-body-sm font-semibold text-neutral-400">Connect New File</p>
+                  <p className="text-caption text-neutral-600 mt-1">Link a PenTool file to sync</p>
+                </Card>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </TabsContent>
 
         {/* File Mapping Tab */}
@@ -135,7 +148,14 @@ export default function PenToolHub() {
             <CardContent>
               <div className="space-y-2">
                 {FILE_MAP.map((mapping, i) => (
-                  <div key={i} className="flex items-center gap-4 p-3 rounded-lg bg-neutral-800/20 border border-neutral-800/30 hover:border-neutral-700/50 transition-colors">
+                  <motion.div
+                    key={i}
+                    className="flex items-center gap-4 p-3 rounded-lg bg-neutral-800/20 border border-neutral-800/30 hover:border-neutral-700/50 transition-colors"
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.06, duration: 0.35 }}
+                    whileHover={{ x: 4 }}
+                  >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <PenTool className="w-3.5 h-3.5 text-purple-400 shrink-0" />
@@ -157,7 +177,7 @@ export default function PenToolHub() {
                       {mapping.status === 'synced' ? <Check className="w-3 h-3 mr-1" /> : <AlertCircle className="w-3 h-3 mr-1" />}
                       {mapping.status}
                     </Badge>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </CardContent>
@@ -179,7 +199,14 @@ export default function PenToolHub() {
             <CardContent>
               <div className="space-y-2">
                 {SYNC_LOG.map((log, i) => (
-                  <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-neutral-800/20 border border-neutral-800/30">
+                  <motion.div
+                    key={i}
+                    className="flex items-center gap-3 p-3 rounded-lg bg-neutral-800/20 border border-neutral-800/30"
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.06, duration: 0.35 }}
+                    whileHover={{ x: 4 }}
+                  >
                     <div className={`w-2 h-2 rounded-full shrink-0 ${
                       log.status === 'success' ? 'bg-success-500' : 'bg-critical-500'
                     }`} />
@@ -190,7 +217,7 @@ export default function PenToolHub() {
                       </div>
                     </div>
                     <span className="text-caption text-neutral-500 shrink-0">{log.time}</span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </CardContent>

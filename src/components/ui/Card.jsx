@@ -1,19 +1,26 @@
+import { motion } from 'framer-motion'
 import { cn } from '../../lib/cn'
+import { hoverLift, hoverGlow, springGentle } from '../../lib/motion'
 
 export default function Card({ className, hover = false, glow = false, children, ...props }) {
   return (
-    <div
+    <motion.div
+      whileHover={
+        hover
+          ? glow
+            ? { y: -4, boxShadow: '0 0 32px rgba(99, 102, 241, 0.3)', borderColor: 'rgba(99, 102, 241, 0.3)', transition: springGentle }
+            : { y: -4, borderColor: 'rgba(99, 102, 241, 0.3)', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)', transition: springGentle }
+          : {}
+      }
       className={cn(
         'rounded-xl bg-neutral-900/50 border border-neutral-800/50 p-6',
-        'transition-all duration-300 ease-default',
-        hover && 'hover:border-primary-500/30 hover:-translate-y-1 hover:shadow-lg',
-        glow && 'hover:shadow-glow hover:border-primary-500/30',
+        'transition-colors duration-200',
         className
       )}
       {...props}
     >
       {children}
-    </div>
+    </motion.div>
   )
 }
 

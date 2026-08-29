@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { Card, CardHeader, CardTitle, CardContent, Badge, Button, ScoreRing, ProgressBar, Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui'
+import { staggerContainer, staggerItem } from '../../lib/motion'
 import { Search, AlertTriangle, CheckCircle, Info, ExternalLink, RefreshCw, Download, Globe } from 'lucide-react'
 
 const PAGES = [
@@ -57,7 +59,12 @@ export default function SeoAudit() {
   const overallScore = Math.round(PAGES.reduce((a, p) => a + p.score, 0) / PAGES.length)
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={staggerContainer}
+      className="space-y-6"
+    >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -144,7 +151,14 @@ export default function SeoAudit() {
           <Card>
             <div className="space-y-2">
               {ISSUES.map((issue, i) => (
-                <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-neutral-800/20 border border-neutral-800/30 hover:border-neutral-700/50 transition-colors">
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  whileHover={{ x: 4, borderColor: 'rgba(51, 65, 85, 0.5)' }}
+                  className="flex items-start gap-3 p-3 rounded-lg bg-neutral-800/20 border border-neutral-800/30 transition-colors"
+                >
                   {issue.type === 'error' ? (
                     <AlertTriangle className="w-4 h-4 text-critical-500 mt-0.5 shrink-0" />
                   ) : issue.type === 'warning' ? (
@@ -164,7 +178,7 @@ export default function SeoAudit() {
                   <Button variant="ghost" size="sm">
                     <ExternalLink className="w-3.5 h-3.5" />
                   </Button>
-                </div>
+                </motion.div>
               ))}
             </div>
           </Card>
@@ -177,16 +191,23 @@ export default function SeoAudit() {
             </CardHeader>
             <CardContent>
               <div className="space-y-1">
-                {CRAWL_MAP.map((page, i) => (
-                  <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-neutral-800/30 transition-colors">
+              {CRAWL_MAP.map((page, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.04 }}
+                  whileHover={{ x: 4, backgroundColor: 'rgba(30, 41, 59, 0.2)' }}
+                  className="flex items-center gap-3 p-2 rounded-lg transition-colors"
+                >
                     <div style={{ paddingLeft: `${page.depth * 24}px` }} className="flex items-center gap-2">
                       {page.depth > 0 && <span className="text-neutral-600">└─</span>}
                       <span className="text-body-sm font-mono text-primary-400">{page.url}</span>
                     </div>
                     <Badge variant={page.status === 200 ? 'success' : 'danger'} size="sm">{page.status}</Badge>
                     <span className="text-caption text-neutral-500">{page.links} links</span>
-                  </div>
-                ))}
+                </motion.div>
+              ))}
               </div>
             </CardContent>
           </Card>
@@ -195,7 +216,13 @@ export default function SeoAudit() {
         <TabsContent value="ai">
           <div className="space-y-4">
             {AI_RECOMMENDATIONS.map((rec, i) => (
-              <Card key={i}>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <Card>
                 <div className="flex items-start gap-4">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                     rec.priority === 'high' ? 'bg-critical-500/10' : 'bg-warning-500/10'
@@ -222,10 +249,11 @@ export default function SeoAudit() {
                   </Button>
                 </div>
               </Card>
+              </motion.div>
             ))}
           </div>
         </TabsContent>
       </Tabs>
-    </div>
+    </motion.div>
   )
 }
